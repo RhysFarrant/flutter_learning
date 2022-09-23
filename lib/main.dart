@@ -12,9 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData.dark(),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
@@ -32,11 +30,42 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
+    return topNavBar();
+  }
+
+  // Top Nav Bar
+  int selected = 0;
+  Widget topNavBar() {
+    Widget tabButton(String title) {
+      return Tab(
+        child: Text(
+          title,
+        ),
+      );
+    }
+
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          bottom: TabBar(
+            tabs: [
+              /* 0 */ tabButton("Option 1"),
+              /* 1 */ tabButton("Option β"),
+              /* 2 */ tabButton("Option C"),
+            ],
+            onTap: (int index) {
+              setState(() {
+                selected = index;
+              });
+            },
+          ),
+        ),
+        body: Center(
+          child: Text("Selected page index is $selected"),
+        ),
       ),
-      body: Container(),
     );
   }
 }
