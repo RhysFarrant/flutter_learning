@@ -39,8 +39,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return customTitleBar(
-      const Expanded(
-        child: Center(child: Text("Body Text")),
+      Expanded(
+        child: Center(
+          child: sideNavBar(),
+        ),
       ),
     );
   }
@@ -82,14 +84,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   // Side Nav Bar
-  bool _extended = true;
+  bool _extended = false;
   NavigationRailLabelType _labelType = NavigationRailLabelType.none;
   Widget sideNavBar() {
-    Widget tabButton(String title) {
-      return Tab(
-        child: Text(
-          title,
-        ),
+    NavigationRailDestination tabButton(Icon icon, String label) {
+      return NavigationRailDestination(
+        icon: icon,
+        label: Text(label),
       );
     }
 
@@ -100,61 +101,58 @@ class _MyHomePageState extends State<MyHomePage> {
           : NavigationRailLabelType.all;
     }
 
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        body: Row(
-          children: [
-            NavigationRail(
-              destinations: const [
-                NavigationRailDestination(
-                  icon: Icon(Icons.add_box),
-                  label: Text('Option 1'),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.check_box),
-                  label: Text('Option β'),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.account_box),
-                  label: Text('Option C'),
-                ),
-              ],
-              selectedIndex: _selectedIndex,
-              onDestinationSelected: (value) {
-                setState(() {
-                  _selectedIndex = value;
-                });
-              },
-              labelType: _labelType,
-              trailing: Expanded(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          toggleExtended();
-                        });
-                      },
-                      icon: const Icon(Icons.more_horiz_rounded),
-                    ),
+    return Row(
+      children: [
+        MouseRegion(
+          onEnter: (_) => setState(() => toggleExtended()),
+          onExit: (_) => setState(() => toggleExtended()),
+          child: NavigationRail(
+            backgroundColor: Theme.of(context).primaryColor,
+            destinations: [
+              tabButton(
+                const Icon(Icons.add_box),
+                'Option 1',
+              ),
+              tabButton(
+                const Icon(Icons.check_box),
+                'Option β',
+              ),
+              tabButton(
+                const Icon(Icons.account_box),
+                'Option C',
+              ),
+            ],
+            selectedIndex: _selectedIndex,
+            onDestinationSelected: (value) {
+              setState(() {
+                _selectedIndex = value;
+              });
+            },
+            labelType: _labelType,
+            trailing: Expanded(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: IconButton(
+                    onPressed: () {
+                      setState(() {});
+                    },
+                    icon: const Icon(Icons.more_horiz_rounded),
                   ),
                 ),
               ),
-              extended: _extended,
-              minExtendedWidth: 200,
-              elevation: 10,
             ),
-            Expanded(
-              child: Center(
-                child: Text("Selected page index is $_selectedIndex"),
-              ),
-            )
-          ],
+            extended: _extended,
+            minExtendedWidth: 200,
+          ),
         ),
-      ),
+        Expanded(
+          child: Center(
+            child: Text("Selected page index is $_selectedIndex"),
+          ),
+        )
+      ],
     );
   }
 
