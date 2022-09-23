@@ -30,11 +30,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return topNavBar();
+    return sideNavBar();
   }
 
   // Top Nav Bar
-  int selected = 0;
+  int _selectedIndex = 0;
   Widget topNavBar() {
     Widget tabButton(String title) {
       return Tab(
@@ -57,13 +57,76 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
             onTap: (int index) {
               setState(() {
-                selected = index;
+                _selectedIndex = index;
               });
             },
           ),
         ),
         body: Center(
-          child: Text("Selected page index is $selected"),
+          child: Text("Selected page index is $_selectedIndex"),
+        ),
+      ),
+    );
+  }
+
+  // Side Nav Bar
+  Widget sideNavBar() {
+    Widget tabButton(String title) {
+      return Tab(
+        child: Text(
+          title,
+        ),
+      );
+    }
+
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        body: Row(
+          children: [
+            NavigationRail(
+              destinations: const [
+                NavigationRailDestination(
+                  icon: Icon(Icons.add_box),
+                  label: Text('Option 1'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.check_box),
+                  label: Text('Option β'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.account_box),
+                  label: Text('Option C'),
+                ),
+              ],
+              selectedIndex: _selectedIndex,
+              onDestinationSelected: (value) {
+                setState(() {
+                  _selectedIndex = value;
+                });
+              },
+              labelType: NavigationRailLabelType.all,
+              trailing: Expanded(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: IconButton(
+                      onPressed: () {
+                        setState(() {});
+                      },
+                      icon: const Icon(Icons.more_horiz_rounded),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Center(
+                child: Text("Selected page index is $_selectedIndex"),
+              ),
+            )
+          ],
         ),
       ),
     );
