@@ -70,6 +70,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   // Side Nav Bar
+  bool _extended = true;
+  NavigationRailLabelType _labelType = NavigationRailLabelType.none;
   Widget sideNavBar() {
     Widget tabButton(String title) {
       return Tab(
@@ -77,6 +79,13 @@ class _MyHomePageState extends State<MyHomePage> {
           title,
         ),
       );
+    }
+
+    void toggleExtended() {
+      _extended = !_extended;
+      _labelType = _extended
+          ? NavigationRailLabelType.none
+          : NavigationRailLabelType.all;
     }
 
     return DefaultTabController(
@@ -105,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   _selectedIndex = value;
                 });
               },
-              labelType: NavigationRailLabelType.all,
+              labelType: _labelType,
               trailing: Expanded(
                 child: Align(
                   alignment: Alignment.bottomCenter,
@@ -113,13 +122,18 @@ class _MyHomePageState extends State<MyHomePage> {
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: IconButton(
                       onPressed: () {
-                        setState(() {});
+                        setState(() {
+                          toggleExtended();
+                        });
                       },
                       icon: const Icon(Icons.more_horiz_rounded),
                     ),
                   ),
                 ),
               ),
+              extended: _extended,
+              minExtendedWidth: 200,
+              elevation: 10,
             ),
             Expanded(
               child: Center(
