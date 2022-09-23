@@ -1,7 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 
 void main() {
   runApp(const MyApp());
+
+  // For Custom Title Bar
+  doWhenWindowReady(() {
+    appWindow.show();
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -13,6 +20,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData.dark(),
+      debugShowCheckedModeBanner: false,
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
@@ -30,7 +38,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return sideNavBar();
+    return customTitleBar(
+      const Expanded(
+        child: Center(child: Text("Body Text")),
+      ),
+    );
   }
 
   // Top Nav Bar
@@ -143,6 +155,111 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+    );
+  }
+
+  // Custom Title Bar
+  /*
+    In windows\runner\main.cpp:
+
+    #include <bitsdojo_window_windows/bitsdojo_window_plugin.h>
+    auto bdw = bitsdojo_window_configure(BDW_CUSTOM_FRAME | BDW_HIDE_ON_STARTUP);
+  */
+  Widget customTitleBar(Widget body) {
+    return Scaffold(
+      body: Column(
+        children: [
+          // App bar
+          Column(
+            children: [
+              WindowTitleBarBox(
+                child: Container(
+                  color: Theme.of(context).cardColor,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 13, top: 8),
+                          child: MoveWindow(
+                            child: const Text(
+                              "Flutter Learning",
+                            ),
+                          ),
+                        ),
+                      ),
+                      const WindowButtons(),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          body,
+        ],
+      ),
+    );
+  }
+}
+
+// For Custom Title Bar
+class WindowTitleBarBox extends StatelessWidget {
+  final Widget? child;
+  const WindowTitleBarBox({Key? key, this.child}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    if (kIsWeb) {
+      return Container();
+    }
+    final titlebarHeight = appWindow.titleBarHeight;
+    return SizedBox(height: titlebarHeight, child: child ?? Container());
+  }
+}
+
+final buttonColors = WindowButtonColors(
+  iconNormal: Colors.white,
+  mouseOver: const Color.fromRGBO(217, 217, 217, 1),
+  mouseDown: const Color.fromRGBO(122, 122, 122, 1),
+  iconMouseOver: const Color.fromRGBO(122, 122, 122, 1),
+  iconMouseDown: const Color.fromRGBO(217, 217, 217, 1),
+);
+
+final closeButtonColors = WindowButtonColors(
+  mouseOver: const Color(0xFFD32F2F),
+  mouseDown: const Color(0xFFB71C1C),
+  iconNormal: Colors.white,
+  iconMouseOver: Colors.white,
+);
+
+class WindowButtons extends StatefulWidget {
+  const WindowButtons({Key? key}) : super(key: key);
+
+  @override
+  WindowButtonsState createState() => WindowButtonsState();
+}
+
+class WindowButtonsState extends State<WindowButtons> {
+  void maximizeOrRestore() {
+    setState(() {
+      appWindow.maximizeOrRestore();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        MinimizeWindowButton(colors: buttonColors),
+        appWindow.isMaximized
+            ? RestoreWindowButton(
+                colors: buttonColors,
+                onPressed: maximizeOrRestore,
+              )
+            : MaximizeWindowButton(
+                colors: buttonColors,
+                onPressed: maximizeOrRestore,
+              ),
+        CloseWindowButton(colors: closeButtonColors),
+      ],
     );
   }
 }
