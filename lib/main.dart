@@ -103,6 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Stack(
       children: [
+        mainBody(),
         Row(
           children: [
             MouseRegion(
@@ -152,17 +153,99 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ),
-        Row(
-          children: [
-            Expanded(
-              child: Center(
+      ],
+    );
+  }
+
+  // Body Generation
+  bool _numberDropdown = false;
+  bool _letterDropdown = false;
+  Widget mainBody() {
+    return Row(
+      children: [
+        Expanded(
+          child: ListView(
+            children: [
+              Center(
                 child: Text(
                   "Selected page index is $_selectedIndex",
                 ),
               ),
+              dropdownList("Number", ["1", "2", "3", "4", "5", "6", "7", "8"]),
+              dropdownList("Letter", ["A", "B", "C", "D", "E", "F", "G", "H"]),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Dropdown list items
+  Widget dropdownList(String title, List<String> items) {
+    Widget itemList = Column(
+      children: items
+          .map((e) => Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: SizedBox(
+                  width: 600 - 16,
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Text(
+                        e,
+                        style: const TextStyle(fontSize: 10),
+                      ),
+                    ),
+                  ),
+                ),
+              ))
+          .toList(),
+    );
+    return Column(
+      children: [
+        InkWell(
+          onTap: () {
+            setState(() {
+              if (title == "Number") {
+                _numberDropdown = !_numberDropdown;
+              } else {
+                _letterDropdown = !_letterDropdown;
+              }
+            });
+          },
+          child: SizedBox(
+            width: 600,
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(title),
+                    title == "Number"
+                        ? _numberDropdown
+                            ? const Icon(Icons.arrow_drop_up_outlined)
+                            : const Icon(Icons.arrow_drop_down_outlined)
+                        : title == "Letter"
+                            ? _letterDropdown
+                                ? const Icon(Icons.arrow_drop_up_outlined)
+                                : const Icon(Icons.arrow_drop_down_outlined)
+                            : Container(),
+                  ],
+                ),
+              ),
             ),
-          ],
-        )
+          ),
+        ),
+        title == "Number"
+            ? _numberDropdown
+                ? itemList
+                : Container()
+            : title == "Letter"
+                ? _letterDropdown
+                    ? itemList
+                    : Container()
+                : Container()
       ],
     );
   }
