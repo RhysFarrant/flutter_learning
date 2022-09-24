@@ -96,61 +96,72 @@ class _MyHomePageState extends State<MyHomePage> {
 
     void toggleExtended() {
       _extended = !_extended;
-      _labelType = _extended
-          ? NavigationRailLabelType.none
-          : NavigationRailLabelType.all;
+      // _labelType = _extended
+      //     ? NavigationRailLabelType.none
+      //     : NavigationRailLabelType.all;
     }
 
-    return Row(
+    return Stack(
       children: [
-        MouseRegion(
-          onEnter: (_) => setState(() => toggleExtended()),
-          onExit: (_) => setState(() => toggleExtended()),
-          child: NavigationRail(
-            backgroundColor: Theme.of(context).primaryColor,
-            destinations: [
-              tabButton(
-                const Icon(Icons.add_box),
-                'Option 1',
-              ),
-              tabButton(
-                const Icon(Icons.check_box),
-                'Option β',
-              ),
-              tabButton(
-                const Icon(Icons.account_box),
-                'Option C',
-              ),
-            ],
-            selectedIndex: _selectedIndex,
-            onDestinationSelected: (value) {
-              setState(() {
-                _selectedIndex = value;
-              });
-            },
-            labelType: _labelType,
-            trailing: Expanded(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: IconButton(
-                    onPressed: () {
-                      setState(() {});
-                    },
-                    icon: const Icon(Icons.more_horiz_rounded),
+        Row(
+          children: [
+            MouseRegion(
+              onEnter: (_) => setState(() => toggleExtended()),
+              onExit: (_) => setState(() => toggleExtended()),
+              child: NavigationRail(
+                backgroundColor: Theme.of(context).primaryColor,
+                destinations: [
+                  tabButton(
+                    const Icon(Icons.add_box),
+                    'Option 1',
                   ),
+                  tabButton(
+                    const Icon(Icons.check_box),
+                    'Option β',
+                  ),
+                  tabButton(
+                    const Icon(Icons.account_box),
+                    'Option C',
+                  ),
+                ],
+                selectedIndex: _selectedIndex,
+                onDestinationSelected: (value) {
+                  setState(() {
+                    _selectedIndex = value;
+                  });
+                },
+                labelType: _labelType,
+                trailing: Expanded(
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: IconButton(
+                        onPressed: () {
+                          setState(() {});
+                        },
+                        icon: const Icon(Icons.more_horiz_rounded),
+                      ),
+                    ),
+                  ),
+                ),
+                extended: _extended,
+                minExtendedWidth: 200,
+                minWidth: 64,
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Center(
+                child: Text(
+                  "Selected page index is $_selectedIndex",
                 ),
               ),
             ),
-            extended: _extended,
-            minExtendedWidth: 200,
-          ),
-        ),
-        Expanded(
-          child: Center(
-            child: Text("Selected page index is $_selectedIndex"),
-          ),
+          ],
         )
       ],
     );
