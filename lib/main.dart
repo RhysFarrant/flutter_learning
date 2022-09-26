@@ -173,7 +173,41 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               dropdownList("Number", ["1", "2", "3", "4", "5", "6", "7", "8"]),
               dropdownList("Letter", ["A", "B", "C", "D", "E", "F", "G", "H"]),
+              highlightCard(),
             ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Card to highlight on hover
+  bool _isHover = false;
+  Widget highlightCard() {
+    return Column(
+      children: [
+        MouseRegion(
+          onEnter: (_) => setState(() => _isHover = true),
+          onExit: (_) => setState(() => _isHover = false),
+          child: SizedBox(
+            width: 600,
+            height: 50,
+            child: Card(
+              shape: _isHover
+                  ? RoundedRectangleBorder(
+                      side: BorderSide(
+                        color: Theme.of(context).indicatorColor,
+                      ),
+                      borderRadius: const BorderRadius.all(Radius.circular(4)))
+                  : null,
+              child: const Padding(
+                padding: EdgeInsets.all(4.0),
+                child: Text(
+                  "This is some Text",
+                  style: TextStyle(fontSize: 10),
+                ),
+              ),
+            ),
           ),
         ),
       ],
